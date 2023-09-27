@@ -7,16 +7,16 @@ export default () => {
   };
 
   return (
-    <div class='flex-none w-72 bg-white text-red-300'>
+    <div class='flex-none w-72 bg-white border-2 border-stone-400 px-2'>
       <div className="description">You can drag these nodes to the pane on the right.</div>
-      <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
-        Input Node
+      <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400 my-1 cursor-grab" onDragStart={(event) => onDragStart(event, 'kafka_producer')} draggable>
+        Kafka Producer Node
       </div>
-      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'custom')} draggable>
-        Default Node
+      <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400 my-1 cursor-grab" onDragStart={(event) => onDragStart(event, 'kafka_server')} draggable>
+        Kafka Server Node
       </div>
-      <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-        Output Node
+      <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400 my-1 cursor-grab" onDragStart={(event) => onDragStart(event, 'kafka_consumer')} draggable>
+        Kafka Consumer Node
       </div>
     </div>
   );
