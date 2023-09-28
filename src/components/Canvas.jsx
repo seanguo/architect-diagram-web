@@ -85,6 +85,19 @@ export default ({onNodeSelected, selectedNode}) => {
     shouldReconnect: (closeEvent) => true,
   });
 
+  const sendCommand = useCallback((params) => {
+    sendJsonMessage({
+      timestamp: new Date(),
+      content:   {
+        "type": params.type,
+        "source": params.source,
+        "target": params.target,
+        "params": params.params
+      },
+      type: 0,
+    });
+  });
+
   const onConnect = useCallback((params) => {
     sendJsonMessage({
       timestamp: new Date(),
@@ -164,6 +177,9 @@ export default ({onNodeSelected, selectedNode}) => {
           messages:[]
         },
       };
+      if (type == 'kafka_consumer') {
+        newNode.data.consumerGroup = "arc_consumer_group";
+      }
 
       setNodes((nds) => nds.concat(newNode));
       sendJsonMessage({
@@ -247,6 +263,19 @@ export default ({onNodeSelected, selectedNode}) => {
             ...node.data,
             name: selectedNode.data.name,
           };
+          if (node.data.consumerGroup != selectedNode.data.consumerGroup) {
+            sendCommand({
+              type: "update",
+              target: node.id,
+              params: {
+                consumerGroup: selectedNode.data.consumerGroup
+              }
+            });
+            node.data = {
+              ...node.data,
+              consumerGroup: selectedNode.data.consumerGroup,
+            };
+          }
         }
 
         return node;
