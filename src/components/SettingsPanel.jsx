@@ -8,9 +8,12 @@ export default ({selectedNode, updateSelectedNode}) => {
       )
     }
     return (
-      <div  class='w-72 bg-white border-2 border-stone-400'>
+      <div  class='w-72 bg-white border-2 border-stone-400 p-2'>
         <div className="font-semibold">Attributes editor</div>
         <div>
+          <label>ID:</label>
+          <input value={selectedNode.id}/>
+
           <label>Name:</label>
           <input class="border-2 border-stone-400" value={selectedNode.data.name} onChange={(evt) => {
             updateNodeDataField(updateSelectedNode, selectedNode, "name", evt.target.value);

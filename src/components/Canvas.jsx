@@ -64,9 +64,13 @@ export default ({onNodeSelected, selectedNode}) => {
           return edge;
         })
       );
+      var appended = false;
       setNodes((nds) =>
         nds.map((node) => {
-          if (node.id === data.id) {
+          console.log("processing " + node);
+          if (node.id === data.id && !appended) {
+            appended = true;
+            console.log("appending messages for " + node.id);
             // it's important that you create a new object here
             // in order to notify react flow about the change
             node.data = {
@@ -75,6 +79,7 @@ export default ({onNodeSelected, selectedNode}) => {
               messages: [...node.data.messages, data.content.content]
               // receivedItems: data.receivedMsg
             };
+            console.log("node messages: " + node.data.messages);
           }
 
           return node;
@@ -121,30 +126,48 @@ export default ({onNodeSelected, selectedNode}) => {
   }, []);
 
   const onNodeExecute = useCallback(
-    (nodeId) => {
+    (nodeId, nodeType) => {
       // event.preventDefault();
       console.log("Node executed: " + nodeId);
-      setEdges((eds) =>
-        eds.map((edge) => {
-          if (edge.source === nodeId) {
-            edge.animated = true;
-          }
+      if (nodeType == 'kafka_consumer') {
+        setNodes((nds) =>
+          nds.map((node) => {
+            if (node.id === nodeId) {
+              console.log("clearing messages for " + nodeId);
+              // it's important that you create a new object here
+              // in order to notify react flow about the change
+              node.data = {
+                ...node.data,
+                messages: []
+                // receivedItems: data.receivedMsg
+              };
+            }
+            return node;
+          })
+        );
+      } else if (nodeType.endsWith('producer')) {
+        setEdges((eds) =>
+          eds.map((edge) => {
+            if (edge.source === nodeId) {
+              edge.animated = true;
+            }
 
-          return edge;
-        })
-      );
-      sendJsonMessage({
-        timestamp: new Date(),
-        id:        "execute1",
-        content:   {
-          "type": "execute",
-          "target": nodeId,
-          "params": {
-            
-          }
-        },
-        type: 0,
-      });
+            return edge;
+          })
+        );
+        sendJsonMessage({
+          timestamp: new Date(),
+          id:        "execute1",
+          content:   {
+            "type": "execute",
+            "target": nodeId,
+            "params": {
+              
+            }
+          },
+          type: 0,
+        });
+      }
     }, []
   );
 
@@ -173,7 +196,7 @@ export default ({onNodeSelected, selectedNode}) => {
           label: `${type} node`,
           name: `${type} node`,
           type: type,
-          onClick: () => onNodeExecute(nodeId),
+          onClick: () => onNodeExecute(nodeId, type),
           messages:[]
         },
       };
@@ -340,7 +363,7 @@ export default ({onNodeSelected, selectedNode}) => {
           </div>
           
         </ReactFlowProvider>
-        <ControlPanel onCommand={onControllCommand}/>
+        {/* <ControlPanel onCommand={onControllCommand}/> */}
       </div>
   );
 }
