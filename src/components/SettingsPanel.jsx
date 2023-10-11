@@ -4,11 +4,13 @@ import React, { useState, useEffect} from 'react';
 export default ({selectedNode, updateSelectedNode}) => {
     if (!selectedNode) {
       return (
-        <div  class='w-72 bg-white border-2 border-stone-400'></div>
+        <div  class='w-72 bg-white border-2 border-stone-400 flex-1 h-full'>
+          <div className="font-semibold">Attributes editor</div>
+        </div>
       )
     }
     return (
-      <div  class='w-72 bg-white border-2 border-stone-400 p-2'>
+      <div  class='w-72 bg-white border-2 border-stone-400 p-2 flex-1'>
         <div className="font-semibold">Attributes editor</div>
         <div>
           <label>ID:</label>

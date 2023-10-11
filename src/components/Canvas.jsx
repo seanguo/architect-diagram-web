@@ -20,7 +20,7 @@ import initialEdges from '../data/edges.js';
 // Customized components
 import ControlPanel from './ControlPanel.jsx';
 import DownloadButton from './DownloadButton.jsx'
-import CustomNode from '../CustomNode.jsx';
+import CustomNode from './CustomNode.jsx';
 import ContextMenu from './ContextMenu.jsx';
 
 // Websocket support

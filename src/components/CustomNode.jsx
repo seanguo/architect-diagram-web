@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import { Handle, Position, NodeResizer } from 'reactflow';
-import kafka_server from './data/kafka_server.png'; 
-import rabbit_producer from './data/rabbit_producer.png'; 
+import NodeIcon from './NodeIcon';
 
 function CustomNode({ data, selected }) {
   return (
@@ -12,7 +11,7 @@ function CustomNode({ data, selected }) {
       <div className="flex flex-col">
       <div className="flex">
         <div className="flex flex-col">
-          <CustomNodeIcon nodeType={data.type} />
+          <NodeIcon nodeType={data.type} />
           <CustomNodeButton nodeType={data.type} onClick={() => data.onClick(data.type)}/>
         </div>
         <div className="ml-2">
@@ -31,17 +30,17 @@ function CustomNode({ data, selected }) {
   );
 }
 
-function CustomNodeIcon({ nodeType}) {
-  var iconSrc
-  if (nodeType.startsWith('kafka')) {
-    iconSrc = kafka_server
-  } else if (nodeType.startsWith('rabbit')) {
-    iconSrc = rabbit_producer
-  }
-  return (
-    <img className="rounded-full w-12 h-12 flex justify-center items-center bg-gray-100" src={iconSrc} />
-  )
-}
+// function CustomNodeIcon({ nodeType}) {
+//   var iconSrc
+//   if (nodeType.startsWith('kafka')) {
+//     iconSrc = kafka_server
+//   } else if (nodeType.startsWith('rabbit')) {
+//     iconSrc = rabbit_producer
+//   }
+//   return (
+//     <img className="rounded-full w-12 h-12 flex justify-center items-center bg-gray-100" src={iconSrc} />
+//   )
+// }
 
 function CustomNodeButton({ nodeType, onClick }) {
   if (nodeType.endsWith('producer')) {
@@ -50,7 +49,7 @@ function CustomNodeButton({ nodeType, onClick }) {
           Send
       </button>
     )
-  } else if (nodeType.endsWith('consumer')) {
+  } else if (nodeType.endsWith('consumer') || nodeType == 'rest_server') {
     return (
       <button class="rounded border-1 border-stone-400 bg-teal-500/50 hover:bg-teal-600/50 shadow-xl text-white my-1" onClick={onClick}>
             Clear
