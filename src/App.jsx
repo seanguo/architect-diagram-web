@@ -15,7 +15,7 @@ const DnDFlow = () => {
     <div class="flex flex-col">
       <Header />
       <MenuBar />
-      <div class="flex grow flex-row min-h-full">
+      <div class="flex grow flex-row min-h-full h-auto h-max">
         <StencilPanel />
         <Canvas onNodeSelected={setSelectedNode} selectedNode={selectedNode} />
         <div class="flex grow flex-col min-h-full">

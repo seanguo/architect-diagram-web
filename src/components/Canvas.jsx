@@ -17,6 +17,9 @@ import 'reactflow/dist/base.css';
 import initialNodes from '../data/nodes.js';
 import initialEdges from '../data/edges.js';
 
+// Arch pattern template
+import patterns from '../templates/patterns.js'
+
 // Customized components
 import ControlPanel from './ControlPanel.jsx';
 import DownloadButton from './DownloadButton.jsx'
@@ -102,8 +105,7 @@ export default ({onNodeSelected, selectedNode}) => {
       type: 0,
     });
   });
-
-  const onConnect = useCallback((params) => {
+  const connectNode = useCallback((params) => {
     sendJsonMessage({
       timestamp: new Date(),
       id:        "connect1",
@@ -118,6 +120,9 @@ export default ({onNodeSelected, selectedNode}) => {
       type: 0,
     });
     setEdges((eds) => addEdge(params, eds))
+  });
+  const onConnect = useCallback((params) => {
+    connectNode(params);
   }, []);
 
   const onDragOver = useCallback((event) => {
@@ -171,22 +176,8 @@ export default ({onNodeSelected, selectedNode}) => {
     }, []
   );
 
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
-
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData('application/reactflow');
-
-      // check if the dropped element is valid
-      if (typeof type === 'undefined' || !type) {
-        return;
-      }
-
-      const position = reactFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
+  const createNode = useCallback(
+    (type, position) => {
       const nodeId = getId();
       const newNode = {
         id: nodeId,
@@ -217,9 +208,63 @@ export default ({onNodeSelected, selectedNode}) => {
         },
         type: 0,
       });
+    }
+  );
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      const type = event.dataTransfer.getData('application/reactflow');
+
+      // check if the dropped element is valid
+      if (typeof type === 'undefined' || !type) {
+        return;
+      }
+
+      const position = reactFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+
+      createNode(type, position);
     },
     [reactFlowInstance]
   );
+
+  
+  const loadTemplate = useCallback(
+    () => {
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      var x = reactFlowBounds.left - 100;
+      var y = reactFlowBounds.top - 80;
+      
+      patterns.forEach(p => {
+        console.log("processing " + p.name);
+        p.commands.forEach(c => {
+          var cmd = c.command;
+          var params = cmd.split(" ");
+          if (params[0] == 'create') {
+            console.log("create node of type " + params[1]);
+            const position = reactFlowInstance.project({
+              x: x,
+              y: y,
+            });
+            createNode(params[1], position);
+            y = y + 100;
+          } else if (params[0] == 'connect') {
+            console.log("connecting node " + params[1] + " to " + params[2]);
+            connectNode({
+              source: params[1],
+              target: params[2]
+            })
+          }
+        });
+      });
+      
+    },
+    [reactFlowInstance]
+  )
 
   const onControllCommand = useCallback(
     (event) => {
@@ -363,7 +408,7 @@ export default ({onNodeSelected, selectedNode}) => {
           </div>
           
         </ReactFlowProvider>
-        {/* <ControlPanel onCommand={onControllCommand}/> */}
+        <ControlPanel onCommand={loadTemplate}/>
       </div>
   );
 }
