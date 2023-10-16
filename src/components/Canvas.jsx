@@ -188,11 +188,15 @@ export default ({onNodeSelected, selectedNode}) => {
           name: `${type} node`,
           type: type,
           onClick: () => onNodeExecute(nodeId, type),
-          messages:[]
+          messages:[],
+          customSettings: {}
         },
       };
       if (type == 'kafka_consumer') {
-        newNode.data.consumerGroup = "arc_consumer_group";
+        newNode.data.customSettings['consumerGroup'] = "arc_consumer_group";
+        newNode.data.customSettings['topic'] = "arc_diagrams";
+      } else if (type == 'kafka_producer') {
+        newNode.data.customSettings['topic'] = "arc_diagrams";
       }
 
       setNodes((nds) => nds.concat(newNode));
@@ -234,21 +238,25 @@ export default ({onNodeSelected, selectedNode}) => {
 
   
   const loadTemplate = useCallback(
-    () => {
+    (name) => {
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       var x = reactFlowBounds.left - 100;
       var y = reactFlowBounds.top - 80;
       
       patterns.forEach(p => {
-        console.log("processing " + p.name);
+        console.log("finding " + name);
+        if (name != p.name) {
+          return;
+        }
+        console.log("loading template: " + p.name);
         p.commands.forEach(c => {
           var cmd = c.command;
           var params = cmd.split(" ");
           if (params[0] == 'create') {
             console.log("create node of type " + params[1]);
             const position = reactFlowInstance.project({
-              x: x,
-              y: y,
+              x: params.length > 2 ? params[2] : x,
+              y: params.length > 3 ? params[3] : y,
             });
             createNode(params[1], position);
             y = y + 100;
@@ -331,17 +339,18 @@ export default ({onNodeSelected, selectedNode}) => {
             ...node.data,
             name: selectedNode.data.name,
           };
-          if (node.data.consumerGroup != selectedNode.data.consumerGroup) {
+          if (node.data.customSettings != selectedNode.data.customSettings) {
             sendCommand({
               type: "update",
               target: node.id,
-              params: {
-                consumerGroup: selectedNode.data.consumerGroup
-              }
+              params: selectedNode.data.customSettings
             });
             node.data = {
               ...node.data,
-              consumerGroup: selectedNode.data.consumerGroup,
+              customSettings: {
+                ...node.data.customSettings,
+                ...selectedNode.data.customSettings
+              }
             };
           }
         }
@@ -408,7 +417,7 @@ export default ({onNodeSelected, selectedNode}) => {
           </div>
           
         </ReactFlowProvider>
-        <ControlPanel onCommand={loadTemplate}/>
+        <ControlPanel onCommand={loadTemplate} patterns={patterns}/>
       </div>
   );
 }

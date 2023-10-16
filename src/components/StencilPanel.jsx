@@ -8,8 +8,8 @@ export default () => {
   };
 
   return (
-    <div class='flex-none w-72 bg-white border-2 border-stone-400 px-2'>
-      <div className="description">You can drag these nodes to the pane on the right.</div>
+    <div class='flex-none w-72 bg-stone-100 border-2 border-t-0 border-stone-400 px-2'>
+      <div className="description">Drag to start.</div>
       <DragableNode name="Kafka Producer" type="kafka_producer" onDragStart={onDragStart} />
       <DragableNode name="Kafka Server" type="kafka_server" onDragStart={onDragStart} />
       <DragableNode name="Kafka Consumer" type="kafka_consumer" onDragStart={onDragStart} />

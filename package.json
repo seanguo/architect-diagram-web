@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "antd": "^5.10.1",
     "html-to-image": "^1.11.11",
+    "rc-drawer": "^6.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropdown": "^1.11.0",
     "react-use-websocket": "^4.3.1",
     "reactflow": "^11.8.3",
     "tailwind": "^4.0.0"
