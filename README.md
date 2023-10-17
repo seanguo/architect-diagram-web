@@ -1,8 +1,14 @@
-# React + Vite
+This is the frontend prototype of the arch-diagrams. It's the toy project created while learning React.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+It uses technology like React, Vite, TailWind etc. The diagram ability is powered by [React Flow](https://reactflow.dev/).
 
-Currently, two official plugins are available:
+# Start
+To start the web server. Run the following command.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+npm install && npm run dev
+```
+
+Then you can access the web UI at http://localhost:5173/. It will try to establish a Websocket connection to the backend service which should be running at port 8080. 
+
+![alt text](arch_diagram_screenshot.png "Web UI Screenshot")
